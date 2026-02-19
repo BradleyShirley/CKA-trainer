@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-NAMESPACE="quota-test"
+NAMESPACE="dev-team"
 
 # Create namespace
 kubectl create namespace $NAMESPACE
