@@ -12,9 +12,8 @@ A Deployment named `web` must become Ready and stay Ready.
 
 ## Constraints
 - Do not delete and recreate the Deployment.
-- Do not delete and recreate the PVC.
-- Fix using Kubernetes-native operations (edit/patch/apply/create), no node SSH required.
+- Fix using Kubernetes-native operations only.
+- No node SSH.
 
 ## Allowed Tools
 - kubectl (get/describe/logs/events/edit/patch/apply)
-

@@ -5,23 +5,24 @@ NS="pvc-pending-wrong-binding-mode"
 APP="web"
 PVC="web-data"
 
-# Namespace must exist
+echo "[1/5] Checking namespace..."
 kubectl get ns "${NS}" >/dev/null 2>&1
 
-# PVC must be Bound
+echo "[2/5] Checking PVC phase..."
 phase="$(kubectl get pvc -n "${NS}" "${PVC}" -o jsonpath='{.status.phase}' 2>/dev/null || true)"
 [[ "${phase}" == "Bound" ]]
 
-# Deployment must have at least 1 available replica
+echo "[3/5] Checking Deployment availability..."
 avail="$(kubectl get deploy -n "${NS}" "${APP}" -o jsonpath='{.status.availableReplicas}' 2>/dev/null || echo "")"
 [[ "${avail}" =~ ^[0-9]+$ ]] && [[ "${avail}" -ge 1 ]]
 
-# Pod must be Ready
+echo "[4/5] Checking Pod readiness..."
 ready="$(kubectl get pods -n "${NS}" -l app="${APP}" -o jsonpath='{range .items[*]}{range .status.conditions[*]}{.type}={.status}{"\n"}{end}{end}' 2>/dev/null | grep -c '^Ready=True$' || true)"
 [[ "${ready}" -ge 1 ]]
 
-# Functional check: nginx should serve content (port-forward to the pod)
+echo "[5/5] Functional HTTP check..."
 pod="$(kubectl get pods -n "${NS}" -l app="${APP}" -o jsonpath='{.items[0].metadata.name}')"
+
 pf_pid=""
 cleanup() {
   if [[ -n "${pf_pid}" ]]; then kill "${pf_pid}" >/dev/null 2>&1 || true; fi
@@ -33,5 +34,6 @@ pf_pid="$!"
 sleep 1
 
 curl -fsS "http://127.0.0.1:18080/" >/dev/null
-exit 0
 
+echo "PASS"
+exit 0
