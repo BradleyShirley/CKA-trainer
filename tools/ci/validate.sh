@@ -25,7 +25,7 @@ fi
 
 mapfile -d '' scripts < <(find scenarios tools -type f -name '*.sh' -print0 | sort -z)
 
-if (( ${#scripts[@]} == 0 )); then
+if ((${#scripts[@]} == 0)); then
   echo "[validate] ERROR: no shell scripts found under scenarios/ or tools/"
   exit 1
 fi
@@ -33,7 +33,7 @@ fi
 echo "[validate] Running shebang + bash syntax checks (${#scripts[@]} scripts)"
 for script in "${scripts[@]}"; do
   first_line=""
-  if IFS= read -r first_line < "$script"; then
+  if IFS= read -r first_line <"$script"; then
     :
   fi
 
@@ -44,12 +44,5 @@ for script in "${scripts[@]}"; do
 
   bash -n "$script"
 done
-
-if command -v shellcheck >/dev/null 2>&1; then
-  echo "[validate] Running shellcheck (error-level only)"
-  shellcheck -S error -x "${scripts[@]}"
-else
-  echo "[validate] shellcheck not installed; skipping"
-fi
 
 echo "[validate] Completed successfully"

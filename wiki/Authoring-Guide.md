@@ -36,7 +36,11 @@ Optional:
 Run before committing:
 
 ```bash
+bash tools/ci/lint.sh
+bash tools/ci/test.sh
 bash tools/ci/validate.sh
 ```
 
-This checks scenario structure, shebang presence, Bash syntax, and `shellcheck` errors when available.
+`lint.sh` enforces shell and workflow linting.
+`test.sh` runs validation plus package smoke tests.
+`validate.sh` runs structure and Bash syntax checks only.

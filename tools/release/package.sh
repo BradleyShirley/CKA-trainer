@@ -30,11 +30,10 @@ tar -czf "$ARCHIVE_PATH" \
   --exclude='./dist' \
   README.md \
   scenarios \
-  tools/ci/validate.sh \
-  tools/release/package.sh
+  tools
 
-sha256sum "$ARCHIVE_PATH" > "$CHECKSUM_PATH"
-find scenarios -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort > "$MANIFEST_PATH"
+sha256sum "$ARCHIVE_PATH" >"$CHECKSUM_PATH"
+find scenarios -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort >"$MANIFEST_PATH"
 
 echo "Created: $ARCHIVE_PATH"
 echo "Created: $CHECKSUM_PATH"

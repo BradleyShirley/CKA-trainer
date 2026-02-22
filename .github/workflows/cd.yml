@@ -1,3 +1,4 @@
+---
 name: CD
 
 on:
@@ -26,10 +27,18 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y shellcheck
+          sudo apt-get install -y shellcheck shfmt yamllint
 
-      - name: Validate repository
-        run: bash tools/ci/validate.sh
+      - name: Run lint checks
+        run: bash tools/ci/lint.sh
+
+      - name: Run tests
+        run: |
+          smoke_version="cd-smoke-${GITHUB_SHA::7}"
+          bash tools/ci/test.sh "$smoke_version"
+
+      - name: Remove smoke artifacts
+        run: rm -rf dist
 
       - name: Resolve version
         id: meta

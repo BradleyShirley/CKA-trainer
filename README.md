@@ -17,6 +17,8 @@ This repository is scenario-driven. Each scenario injects a failure and provides
 │   ├── pvc_pending_no_matching_storageclass/
 │   └── pvc_pending_wrong_binding_mode/
 ├── tools/
+│   ├── ci/lint.sh
+│   ├── ci/test.sh
 │   ├── ci/validate.sh
 │   └── release/package.sh
 └── README.md
@@ -31,6 +33,8 @@ This repository is scenario-driven. Each scenario injects a failure and provides
 Optional for local linting parity with CI:
 
 - `shellcheck`
+- `shfmt`
+- `yamllint`
 
 ## Scenario workflow
 
@@ -49,9 +53,21 @@ Optional for local linting parity with CI:
 | `pvc_pending_no_matching_storageclass` | Storage | PVC references missing StorageClass | `stg-lab` | `verify.sh` present |
 | `pvc_pending_wrong_binding_mode` | Storage | PVC/storage class binding mode mismatch | `pvc-pending-wrong-binding-mode` | `verify.sh` present |
 
-## Validation and packaging
+## Linting, testing, and packaging
 
-Run repository validation:
+Run lint checks:
+
+```bash
+bash tools/ci/lint.sh
+```
+
+Run repository tests:
+
+```bash
+bash tools/ci/test.sh
+```
+
+Run structural validation only:
 
 ```bash
 bash tools/ci/validate.sh
@@ -74,14 +90,15 @@ Artifacts are written to `dist/`:
 ### CI (`.github/workflows/ci.yml`)
 
 - Triggers: pull requests, pushes to `main`
-- Installs `shellcheck`
-- Runs `tools/ci/validate.sh`
-- Builds and uploads a smoke-test package artifact
+- Runs lint stage (`tools/ci/lint.sh`) including `shellcheck`
+- Runs test stage (`tools/ci/test.sh`) with a package smoke test
+- Uploads test package artifacts
 
 ### CD (`.github/workflows/cd.yml`)
 
 - Triggers: pushes to `main`, tags matching `v*`, manual dispatch
-- Re-runs validation and builds versioned artifacts
+- Re-runs lint + tests before any release packaging
+- Builds versioned artifacts after quality gates pass
 - Uploads artifacts for each run
 - On tag pushes like `v0.1.0`, publishes a GitHub Release with artifacts
 
