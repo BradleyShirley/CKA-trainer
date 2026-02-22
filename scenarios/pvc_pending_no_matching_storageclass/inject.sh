@@ -1,6 +1,7 @@
-# pvc_pending_no_matching_storageclass/inject.sh
 #!/usr/bin/env bash
 set -euo pipefail
+
+# pvc_pending_no_matching_storageclass/inject.sh
 
 NS=stg-lab
 
@@ -85,4 +86,3 @@ kubectl -n "$NS" patch deployment web --type='json' -p='[
 ]' >/dev/null 2>&1 || true
 
 exit 0
-

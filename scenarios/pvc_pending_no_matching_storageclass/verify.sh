@@ -1,6 +1,7 @@
-# pvc_pending_no_matching_storageclass/verify.sh
 #!/usr/bin/env bash
 set -euo pipefail
+
+# pvc_pending_no_matching_storageclass/verify.sh
 
 NS=stg-lab
 
@@ -24,4 +25,3 @@ kubectl -n "$NS" run verify-curl --image=curlimages/curl:8.7.1 --restart=Never -
   sh -lc 'set -e; out="$(curl -sS -m 3 http://web)"; echo "$out" | grep -q ok' >/dev/null
 
 exit 0
-
